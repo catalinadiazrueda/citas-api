@@ -1,6 +1,6 @@
 # Índice de la LLM Wiki
 
-Última actualización: 2026-09-22. El corte backend de identidad (HU-005/006/007) tiene implementación y contrato REST inicial. El frontend React/Vite está importado y contiene trabajo local de integración auth pendiente de verificación. Las demás capacidades siguen sin contrato final.
+Última actualización: 2026-09-23. HU-001/002/003/004 y el corte de identidad tienen documentación cerrada; el contrato S3 de scheduling está alineado entre backend y frontend React/Vite. HU-014 a HU-024 y HU-033 conservan trabajo de pruebas/cobertura visual pendiente.
 
 ## Lectura recomendada
 

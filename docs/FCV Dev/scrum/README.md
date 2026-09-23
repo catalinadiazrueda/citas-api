@@ -1,20 +1,20 @@
 ---
 tipo: indice-scrum
-estado: Pendiente de aprobación
+estado: En desarrollo
 ---
 
 # Mapa Scrum / Spec-Driven Development — Sistema de citas
 
 ## Propósito y límites
 
-Este mapa convierte el PRD v1 y las restricciones autorizadas en trabajo secuencial y verificable. El usuario aprobó el 2026-09-17 el corte backend de HU-001/002/004/005/006/007 y el seed parcial de roles de HU-003; las demás HU requieren revisión explícita. El contrato de autenticación está en la LLM Wiki; el framework web sigue sin aprobación.
+Este mapa convierte el PRD v1 y las restricciones autorizadas en trabajo secuencial y verificable. El cierre S2 de HU-001/002 y el corte S3 de catálogos, contrato y scheduling se documentan con evidencia en la LLM Wiki. Las capacidades posteriores conservan su estado hasta contar con pruebas y pantallas completas.
 
 ## Arquitectura y supuestos constatados
 
 - Backend requerido: Java 21, Spring Boot 3.5.x, Maven, arquitectura hexagonal, JPA, Flyway, MySQL 8.4 y REST/JSON.
-- Cliente requerido: TypeScript con React o Angular por decidir, consume REST directo; no hay Express ni BFF.
+- Cliente requerido: React 19 + TypeScript + Vite detectado en `citas-web`, consume REST directo; no hay Express ni BFF.
 - Los catálogos fijos se cargan por seed; los datos del laboratorio son sintéticos.
-- El repositorio contiene la aplicación backend y el contrato inicial de identidad. HU-005/006/007 están `Completada` para el corte backend con evidencia de `mvn test` (8 pruebas, 0 fallos); HU-001/002/003 y las épicas EP-001/002 permanecen parciales.
+- HU-001/002/005/006/007 están `Completada` para sus cortes documentados. HU-003/004 tienen contrato y endpoints publicados; HU-014 a HU-024 y HU-033 permanecen en desarrollo hasta cerrar pruebas y cobertura visual restante.
 
 ## Épicas
 

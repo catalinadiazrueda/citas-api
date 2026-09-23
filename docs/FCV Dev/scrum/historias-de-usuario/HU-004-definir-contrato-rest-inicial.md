@@ -2,7 +2,7 @@
 id: HU-004
 tipo: historia-de-usuario
 titulo: "Definir contrato REST inicial"
-estado: En desarrollo
+estado: Completada
 epica: "[[EP-001-fundacion-y-contrato-del-producto]]"
 esfuerzo: Alto
 sprint_sugerido: "Incremento 1"
@@ -30,9 +30,9 @@ El PRD exige REST/JSON directo, pero no fija rutas, formatos ni códigos. Estos 
 ## Esfuerzo
 **Nivel:** Alto. **Justificación de dificultad:** es un acuerdo transversal entre dos repositorios y múltiples roles.
 ## Tareas de desarrollo
-- [ ] **T-01 — Proponer contrato por capacidad.** Dificultad: Alto. Definir recursos/representaciones solo para HU aprobadas.
-- [ ] **T-02 — Documentar seguridad y errores.** Dificultad: Alto. Precisar autenticación, autorización, validación y respuestas sin filtrar secretos.
-- [ ] **T-03 — Revisar compatibilidad cross-repo.** Dificultad: Alto. Enumerar repositorios, archivos, migración y pruebas antes de cambiar contratos.
+- [x] **T-01 — Proponer contrato por capacidad.** Dificultad: Alto. Definir recursos/representaciones solo para HU aprobadas.
+- [x] **T-02 — Documentar seguridad y errores.** Dificultad: Alto. Precisar autenticación, autorización, validación y respuestas sin filtrar secretos.
+- [x] **T-03 — Revisar compatibilidad cross-repo.** Dificultad: Alto. Enumerar repositorios, archivos, migración y pruebas antes de cambiar contratos.
 ## Criterios de aceptación
 ### CA-01 — Contrato sin ambigüedad operativa
 **Dado** una HU aprobada, **cuando** frontend y backend revisan su contrato, **entonces** conocen representación, validaciones, respuestas y reglas de acceso necesarias sin deducirlas de pantallas.
@@ -47,11 +47,12 @@ El PRD exige REST/JSON directo, pero no fija rutas, formatos ni códigos. Estos 
 ## Evidencia de validación
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 / DoD | Pendiente | — | — |
+| CA-01 | Cumple | `llm-wiki/wiki/contracts.md` | Representaciones, validaciones, roles y errores documentados. |
+| CA-02 | Cumple | `citas-web/src/api/{authApi,schedulingApi}.ts` | REST directo a Spring Boot, sin BFF. |
+| CA-03 / DoD | Cumple | contrato S3 + evidencia de typecheck/tests/build y Maven | Cambios cross-repo enumerados y verificables. |
 ## Historial de validación
 - 2026-09-17 — HU creada en estado `Pendiente de aprobación`.
+- 2026-09-23 — HU cerrada para el contrato S3: scheduling y cliente web alineados.
 ## Notas y decisiones
 - No hay contrato final aprobado a la fecha.
 - 2026-09-17: aprobado el contrato inicial de HU-005/006/007 documentado en `../../llm-wiki/wiki/contracts.md`. El resto de capacidades se añadirá cuando sus HU se aprueben. El impacto cross-repo está enumerado en esa página; no se edita `citas-web` en este incremento.

@@ -37,7 +37,8 @@ Todos los recursos S3 usan `/api/v1`, JWT access en `Authorization: Bearer` y JS
 
 | Recurso | Operación | Rol |
 |---|---|---|
-| Catálogos | `GET /catalogs/{locations|appointment-statuses|roles|regimes|plans}` | autenticado |
+| Catálogos | `GET /catalogs/{locations|appointment-statuses|roles|regimes}` | autenticado |
+| Planes activos para registro | `GET /catalogs/plans` | público; solo devuelve planes `active=true` |
 | Especialidades disponibles | `GET /specialties` | autenticado |
 | Especialidades ADMIN | `GET|POST|PATCH /admin/specialties[/{id}]` | ADMIN |
 | Profesionales | `POST /admin/professionals`; `PUT /admin/professionals/{id}/specialties|locations`; `PATCH /admin/professionals/{id}/active` | ADMIN |
@@ -46,7 +47,9 @@ Todos los recursos S3 usan `/api/v1`, JWT access en `Authorization: Bearer` y JS
 | Reserva | `POST /appointments` | USER |
 | Solicitudes especializadas | `GET /admin/appointments/pending-specialized`; `POST /admin/appointments/{id}/decision` | ADMIN |
 
-`POST /auth/register` acepta `insurancePlanId` opcional; la afiliación es administrativa y no modifica las reglas de agenda. `POST /appointments` recibe `professionalId`, `locationId`, `specialtyId`, `date`, `startTime` y `reason` opcional. La API deriva la naturaleza general o especializada desde la especialidad: devuelve `APPROVED` para general y `REQUESTED` para especializada. Una decisión ADMIN recibe `APPROVE` o `REJECT`; el rechazo exige `reason`.
+`POST /auth/register` acepta `insurancePlanId` opcional; la afiliación es administrativa y no modifica las reglas de agenda. El formulario de registro obtiene las opciones mediante `GET /catalogs/plans`, que es público y solo expone planes activos. Un plan inexistente o inactivo devuelve `400` Problem Details y la transacción no persiste el usuario. `POST /appointments` recibe `professionalId`, `locationId`, `specialtyId`, `date`, `startTime` y `reason` opcional. La API deriva la naturaleza general o especializada desde la especialidad: devuelve `APPROVED` para general y `REQUESTED` para especializada. Una decisión ADMIN recibe `APPROVE` o `REJECT`; el rechazo exige `reason`.
+
+Las representaciones operativas verificadas en S3 son: bloques propios con `{id, locationId, date, start, end}` y comandos con `{locationId, date, startTime, endTime}`; disponibilidad con `{professionalId, professionalName, startAt, endAt}`; y solicitudes pendientes con `{id, startAt, endAt, patientName, professionalName, specialtyName, locationName}`. La consulta de bloques solo devuelve el ownership del PROFESSIONAL autenticado. La respuesta de reserva contiene `{id, status, startAt, endAt}`; el cliente no infiere nombres ni citas desde almacenamiento local.
 
 Errores de validación usan `400`; recursos o relaciones inexistentes usan `404`; rol u ownership usan `403`; slots ocupados, selección inválida o transición no permitida usan `409`. El frontend consume estas rutas directamente, sin BFF, y no guarda citas ni slots como fuente de verdad.
 

@@ -67,6 +67,13 @@ class AuthIntegrationTest {
         mvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON).content(registration(email, doc)))
                 .andExpect(status().isCreated());
     }
+    @Test void activePlansArePublicForRegistrationAndExcludeInactivePlans() throws Exception {
+        var response = mvc.perform(get("/api/v1/catalogs/plans")).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").exists()).andReturn().getResponse().getContentAsString();
+        for (JsonNode plan : mapper.readTree(response)) {
+            assertThat(jdbc.queryForObject("select active from eps_plans where id=?", Boolean.class, plan.get("id").asLong())).isTrue();
+        }
+    }
     @Test void registrationCreatesOptionalCurrentInsuranceAffiliation() throws Exception {
         Long planId = jdbc.queryForObject("select id from eps_plans where active=true limit 1", Long.class);
         String email = uniqueEmail();
@@ -75,6 +82,28 @@ class AuthIntegrationTest {
                 """.formatted(uniqueDoc(), email, planId))).andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
         Long userId = mapper.readTree(body).get("id").asLong();
         assertThat(jdbc.queryForObject("select count(*) from user_insurance_affiliations where user_id=? and plan_id=? and is_current=true", Integer.class, userId, planId)).isEqualTo(1);
+    }
+    @Test void invalidInsurancePlanIsRejectedWithoutPersistingTheUser() throws Exception {
+        String email = uniqueEmail();
+        mvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON).content("""
+                {"firstName":"Ana","lastName":"Plan","documentType":"CC","documentNumber":"%s","email":"%s","phone":"3000000000","password":"SyntheticPass123!","insurancePlanId":999999999}
+                """.formatted(uniqueDoc(), email))).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
+        assertThat(jdbc.queryForObject("select count(*) from users where email=?", Integer.class, email)).isZero();
+    }
+    @Test void inactiveInsurancePlanIsRejectedWithoutPersistingTheUser() throws Exception {
+        Long planId = jdbc.queryForObject("select id from eps_plans where active=true limit 1", Long.class);
+        jdbc.update("update eps_plans set active=false where id=?", planId);
+        String email = uniqueEmail();
+        try {
+            mvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON).content("""
+                    {"firstName":"Ana","lastName":"Plan","documentType":"CC","documentNumber":"%s","email":"%s","phone":"3000000000","password":"SyntheticPass123!","insurancePlanId":%d}
+                    """.formatted(uniqueDoc(), email, planId))).andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400));
+            assertThat(jdbc.queryForObject("select count(*) from users where email=?", Integer.class, email)).isZero();
+        } finally {
+            jdbc.update("update eps_plans set active=true where id=?", planId);
+        }
     }
     private org.springframework.test.web.servlet.ResultActions login(String email, String password) throws Exception {
         return mvc.perform(post("/api/v1/auth/login").header("X-Requested-With", "XMLHttpRequest")

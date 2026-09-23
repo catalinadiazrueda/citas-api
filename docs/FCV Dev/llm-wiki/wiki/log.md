@@ -10,3 +10,4 @@
 | 2026-09-22 | LEARN/DECISIÓN | HU-033, `contracts.md`, `traceability.md` | Corte React de autenticación integrado y validado contra API/MySQL; CORS explícito y compatibilidad Flyway con el esquema 3FN existente documentados; HU-033 queda en progreso. |
 | 2026-09-22 | LINT | `data-integrity.md`, HU-005 a HU-007 | Evidencia actualizada a 9/9 pruebas Maven y modelo persistente `refresh_tokens`; integración web USER confirmada sin cerrar HU posteriores. |
 | 2026-09-22 | DECISIÓN | HU-001, HU-002, HU-011, HU-014 a HU-024 y `contracts.md` | Cierre S2 confirmado para fundación y modelo 3FN; corte S3 aprobado con afiliación opcional, agenda real y contrato REST compartido. |
+| 2026-09-23 | INGEST/LEARN | S3 backend/frontend, `contracts.md`, HU-003/HU-004, cliente React | Se alinearon payloads de bloques y solicitudes pendientes, se completó la superficie ADMIN de profesionales y se verificó `mvn test` (15/15), `npm run lint`, `npm test` (11/11) y `npm run build`. |
