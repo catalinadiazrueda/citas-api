@@ -1,0 +1,13 @@
+services:
+  api-test:
+    image: maven:3.9-eclipse-temurin-21
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+      - maven_auth_cache:/root/.m2
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+      TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
+volumes:
+  maven_auth_cache:
