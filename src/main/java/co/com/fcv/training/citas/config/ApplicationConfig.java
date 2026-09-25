@@ -7,10 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
 import java.time.Clock;
+import java.time.ZoneId;
 
 @Configuration
 class ApplicationConfig {
-    @Bean Clock clock() { return Clock.systemUTC(); }
+    @Bean Clock clock() { return Clock.system(ZoneId.of("America/Bogota")); }
 
     @Bean Ports.Passwords passwords() {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
