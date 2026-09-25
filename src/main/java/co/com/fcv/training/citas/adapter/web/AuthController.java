@@ -2,6 +2,7 @@ package co.com.fcv.training.citas.adapter.web;
 
 import co.com.fcv.training.citas.application.AuthFailure;
 import co.com.fcv.training.citas.application.AuthService;
+import co.com.fcv.training.citas.application.PasswordRecoveryService;
 import co.com.fcv.training.citas.domain.Account;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
+import jakarta.validation.constraints.Email;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -28,19 +30,23 @@ class AuthController {
                             String documentNumber, String email, String phone, String role) {}
     record LoginRequest(@NotBlank String email, @NotBlank String password) {}
     record AccessResponse(String accessToken, String tokenType, long expiresIn) {}
+    record RecoveryRequest(@NotBlank @Email String email) {}
+    record ResetRequest(@NotBlank String token, @NotBlank String newPassword) {}
 
     private final AuthService auth;
     private final boolean secureCookie;
     private final String sameSite;
     private final long refreshDays;
+    private final PasswordRecoveryService recovery;
 
     AuthController(AuthService auth, @Value("${app.cookie.secure}") boolean secureCookie,
                    @Value("${app.cookie.same-site}") String sameSite,
-                   @Value("${app.jwt.refresh-days}") long refreshDays) {
+                   @Value("${app.jwt.refresh-days}") long refreshDays, PasswordRecoveryService recovery) {
         this.auth = auth;
         this.secureCookie = secureCookie;
         this.sameSite = sameSite;
         this.refreshDays = refreshDays;
+        this.recovery = recovery;
     }
 
     @PostMapping("/register")
@@ -66,6 +72,18 @@ class AuthController {
     ResponseEntity<Void> logout(@CookieValue(name = "refresh_token", required = false) String token) {
         auth.logout(token);
         return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, cookie("", Duration.ZERO)).build();
+    }
+
+    @PostMapping("/password-recovery")
+    ResponseEntity<Void> passwordRecovery(@Valid @RequestBody RecoveryRequest request) {
+        recovery.request(request.email());
+        return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("/password-reset")
+    ResponseEntity<Void> passwordReset(@Valid @RequestBody ResetRequest request) {
+        recovery.reset(request.token(), request.newPassword());
+        return ResponseEntity.noContent().build();
     }
 
     private ResponseEntity<AccessResponse> tokenResponse(AuthService.Tokens tokens) {
