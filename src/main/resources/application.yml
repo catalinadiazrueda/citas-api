@@ -26,3 +26,5 @@ app:
   cookie:
     secure: ${REFRESH_COOKIE_SECURE:true}
     same-site: ${REFRESH_COOKIE_SAME_SITE:None}
+  automation:
+    status-webhook-url: ${STATUS_WEBHOOK_URL:}

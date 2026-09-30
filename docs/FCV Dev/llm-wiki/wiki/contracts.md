@@ -57,4 +57,21 @@ Errores de validación usan `400`; recursos o relaciones inexistentes usan `404`
 
 `citas-web` consume las cuatro operaciones de autenticación directamente con `VITE_API_URL` (valor local: `http://localhost:8080`). Envía `credentials: include` y `X-Requested-With: XMLHttpRequest` en login, refresh y logout. El access JWT permanece solo en memoria; el refresh se mantiene en cookie `HttpOnly` y se rota al restaurar la sesión. La interfaz no registra ni muestra tokens o contraseñas.
 
-El CORS permite exclusivamente `FRONTEND_ORIGIN`, métodos `POST`, `GET`, `OPTIONS`, encabezados `Content-Type`, `Authorization`, `X-Requested-With` y credenciales. La base de referencia ya existente utiliza `BIGINT` para usuarios, `roles.code` y `refresh_tokens`; Flyway hace baseline en versión 0 y `V1` es compatible con ese esquema 3FN.
+ El CORS permite exclusivamente `FRONTEND_ORIGIN`, métodos `POST`, `GET`, `OPTIONS`, encabezados `Content-Type`, `Authorization`, `X-Requested-With` y credenciales. La base de referencia ya existente utiliza `BIGINT` para usuarios, `roles.code` y `refresh_tokens`; Flyway hace baseline en versión 0 y `V1` es compatible con ese esquema 3FN.
+
+## DECISIÓN — 2026-09-30 · Contrato del ciclo de vida y operación
+
+Con autorización explícita para completar el proyecto, las rutas nuevas se agregan sin alterar las rutas existentes de `/api/v1`. Las fechas usan `YYYY-MM-DD`, horas `HH:mm` y datetimes ISO-8601 en `America/Bogota`.
+
+| Recurso | Operación | Rol |
+|---|---|---|
+| Perfil | `GET|PUT /me`; `GET|PUT /me/affiliation` | USER propietario |
+| Citas propias | `GET /appointments/mine?status=&date=`; `GET /appointments/{id}`; `POST /appointments/{id}/cancel` | USER propietario |
+| Reprogramación | `POST /appointments/{id}/reschedules` con `date,startTime` | USER propietario |
+| Agenda/cierre | `GET /professional/agenda?date=&locationId=`; `POST /professional/appointments/{id}/close` | PROFESSIONAL propietario |
+| Auditoría | `GET /appointments/{id}/history` | USER/PROFESSIONAL propietario o ADMIN |
+| Reprogramaciones pendientes | `GET /admin/reschedules/pending`; `POST /admin/reschedules/{id}/decision` | ADMIN |
+| EPS y planes | `GET|POST|PATCH /admin/eps`; `GET|POST|PATCH /admin/plans` | ADMIN |
+| Automatización de lectura | `GET /automation/reminders?from=&to=`; `GET /automation/daily-summary?date=` | ADMIN de servicio |
+
+El perfil permite editar solo nombres, apellidos, email y teléfono; documento y roles no se editan. La afiliación tiene un único registro actual por usuario y conserva FKs a plan/EPS/régimen. Una reprogramación mantiene profesional, especialidad y sede de la cita original; su nueva franja se retiene separadamente. `APPROVE` sustituye slots atómicamente; `REJECT` los libera y conserva la cita original. Un profesional puede cerrar solo una cita propia `APPROVED` cuya hora final ya pasó. Los endpoints de automatización son lectura y requieren un JWT ADMIN configurado fuera del repositorio; sus workflows no contienen credenciales.

@@ -1,0 +1,12 @@
+{
+  "name": "WF-001 Appointment reminders",
+  "nodes": [
+    {"parameters":{"rule":{"interval":[{"field":"cronExpression","expression":"0 0 8 * * *"}]}},"id":"schedule","name":"Daily schedule","type":"n8n-nodes-base.scheduleTrigger","typeVersion":1,"position":[260,300]},
+    {"parameters":{"url":"={{ $env.CITAS_API_URL + '/api/v1/automation/reminders?from=' + $now.toISODate() + '&to=' + $now.plus({days: 1}).toISODate() }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"Authorization","value":"=Bearer {{ $env.CITAS_AUTOMATION_TOKEN }}"}]}},"id":"appointments","name":"Read approved appointments","type":"n8n-nodes-base.httpRequest","typeVersion":4,"position":[500,300]},
+    {"parameters":{"fromEmail":"={{ $env.GMAIL_FROM }}","toEmail":"={{ $json.email }}","subject":"Recordatorio de cita","emailFormat":"text","text":"=Recuerda tu cita de {{ $json.specialtyName }} en {{ $json.locationName }} el {{ $json.startAt }}."},"id":"gmail","name":"Send reminder","type":"n8n-nodes-base.gmail","typeVersion":2,"position":[740,300],"credentials":{"gmailOAuth2":{"id":"REPLACE_IN_N8N","name":"Gmail account"}}}
+  ],
+  "connections":{"Daily schedule":{"main":[[{"node":"Read approved appointments","type":"main","index":0}]]},"Read approved appointments":{"main":[[{"node":"Send reminder","type":"main","index":0}]]}},
+  "active":false,
+  "settings":{"executionOrder":"v1"},
+  "versionId":"template-no-credentials"
+}

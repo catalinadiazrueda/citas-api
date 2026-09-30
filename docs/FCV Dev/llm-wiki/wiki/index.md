@@ -1,6 +1,6 @@
 # Índice de la LLM Wiki
 
-Última actualización: 2026-09-23. HU-001/002/003/004 y el corte de identidad tienen documentación cerrada; el contrato S3 de scheduling está alineado entre backend y frontend React/Vite. HU-014 a HU-024 y HU-033 conservan trabajo de pruebas/cobertura visual pendiente.
+Última actualización: 2026-09-30. HU-001/002/003/004 y el corte de identidad tienen documentación cerrada; el contrato de ciclo de vida añade perfil, afiliación, cancelación, reprogramación, operación y automatización de lectura. La evidencia final de ejecución n8n depende de la instancia y credenciales del trainer.
 
 ## Lectura recomendada
 
