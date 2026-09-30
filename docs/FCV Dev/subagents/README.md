@@ -4,9 +4,9 @@ Este directorio contiene las instrucciones operativas de los subagentes que el o
 
 ## Contexto vigente
 
-- `citas-api`: Spring Boot 3.5/Java 21 en `develop`; HU-005/006/007 implementadas para registro, login, refresh y logout JWT.
-- `citas-web`: React 19 + TypeScript + Vite importado en `develop`; existe trabajo local de integración de autenticación pendiente de validación y commit.
-- Contrato aprobado: solo `/api/v1/auth` para HU-005/006/007. No inferir contratos para perfil, recuperación o citas.
+- `citas-api`: Spring Boot 3.5/Java 21 objetivo en `develop`; identidad, scheduling y lifecycle están implementados. Los contratos posteriores a identidad se documentan en la LLM Wiki.
+- `citas-web`: React 19 + TypeScript + Vite en `develop`; integra auth, reserva, paneles iniciales de roles, perfil/afiliación y EPS/planes. La validación local actual se registra en `llm-wiki/wiki/traceability.md`; quedan pendientes pruebas cross-repo de los paneles nuevos y cierre visual de HU-033.
+- No inventar ni ampliar endpoints: consultar `llm-wiki/wiki/contracts.md` antes de cualquier trabajo REST cross-repo.
 
 ## Catálogo
 

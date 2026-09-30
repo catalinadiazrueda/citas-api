@@ -15,3 +15,10 @@ El catálogo de ocho subagentes fue versionado en `docs/FCV Dev/subagents/` y en
 ## HECHO — 2026-09-22 · Integración de autenticación
 
 El prototipo `citas-web/portal-de-citas.zip` se importó como React/Vite y se integró con HU-005/006/007. La comprobación usa MySQL persistente, CORS explícito, registro/login/refresh/logout reales y pruebas de frontend. HU-033 permanece en progreso porque las pantallas de perfil, agenda y roles posteriores siguen fuera del corte de autenticación.
+
+## HECHO — 2026-09-30 · Verificación local de entrega
+
+- Backend: `mvn test` completo pasó 20/20 pruebas, incluidos Testcontainers con MySQL 8.4 y aplicación de las cinco migraciones. Maven compiló con `--release 21`; el proceso de pruebas usó Java 26 porque Java 21 no está instalado localmente.
+- Frontend: `npm run lint`, `npm test` (13/13) y `npm run build` pasaron tras alinear el fallback de API con el puerto `8080` publicado por Docker Compose. Se añadieron paneles de perfil/afiliación y de administración EPS/planes con pruebas de componente; la verificación todavía no es una prueba cross-repo de esos paneles.
+- Infraestructura/automatización: `docker compose config --quiet` pasó; los tres JSON WF-001/002/003 parsean y no activan el detector de patrones de secretos. Esto no demuestra que la instancia n8n los importe o ejecute.
+- Pendiente externo: no se validó el n8n del trainer por error de certificado TLS; faltan las credenciales Gmail/MCP, las ejecuciones controladas y evidencia de GOAL/loops.
