@@ -2,7 +2,7 @@
   "name": "WF-003 Daily operational summary",
   "nodes": [
     {"parameters":{"rule":{"interval":[{"field":"cronExpression","expression":"0 0 18 * * *"}]}},"id":"schedule","name":"Daily schedule","type":"n8n-nodes-base.scheduleTrigger","typeVersion":1,"position":[260,300]},
-    {"parameters":{"url":"={{ $env.CITAS_API_URL + '/api/v1/automation/daily-summary?date=' + $now.toISODate() }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"Authorization","value":"=Bearer {{ $env.CITAS_AUTOMATION_TOKEN }}"}]}},"id":"summary","name":"Read daily summary","type":"n8n-nodes-base.httpRequest","typeVersion":4,"position":[500,300]},
+    {"parameters":{"url":"={{ $env.CITAS_API_URL + '/api/v1/automation/daily-summary?date=' + $now.toISODate() }}","authentication":"genericCredentialType","genericAuthType":"httpHeaderAuth"},"id":"summary","name":"Read daily summary","type":"n8n-nodes-base.httpRequest","typeVersion":4,"position":[500,300],"credentials":{"httpHeaderAuth":{"id":"CONFIGURE_IN_N8N","name":"Citas automation API key"}}},
     {"parameters":{"fromEmail":"={{ $env.GMAIL_FROM }}","toEmail":"={{ $env.OPERATIONS_EMAIL }}","subject":"Resumen operativo diario","emailFormat":"text","text":"={{ JSON.stringify($json) }}"},"id":"gmail","name":"Send summary","type":"n8n-nodes-base.gmail","typeVersion":2,"position":[740,300],"credentials":{"gmailOAuth2":{"id":"REPLACE_IN_N8N","name":"Gmail account"}}}
   ],
   "connections":{"Daily schedule":{"main":[[{"node":"Read daily summary","type":"main","index":0}]]},"Read daily summary":{"main":[[{"node":"Send summary","type":"main","index":0}]]}},

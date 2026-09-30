@@ -1,7 +1,7 @@
 {
   "name": "WF-002 Status notifications",
   "nodes": [
-    {"parameters":{"httpMethod":"POST","path":"citas-status-change","responseMode":"onReceived"},"id":"webhook","name":"Status webhook","type":"n8n-nodes-base.webhook","typeVersion":2,"position":[280,300]},
+    {"parameters":{"httpMethod":"POST","path":"citas-status-change","responseMode":"onReceived","authentication":"headerAuth"},"id":"webhook","name":"Status webhook","type":"n8n-nodes-base.webhook","typeVersion":2,"position":[280,300],"credentials":{"httpHeaderAuth":{"id":"CONFIGURE_IN_N8N","name":"Citas status webhook secret"}}},
     {"parameters":{"conditions":{"string":[{"value1":"={{ $json.status }}","operation":"notEmpty"},{"value1":"={{ $json.patientEmail }}","operation":"notEmpty"}]}},"id":"validate","name":"Validate minimal event","type":"n8n-nodes-base.if","typeVersion":2,"position":[500,300]},
     {"parameters":{"fromEmail":"={{ $env.GMAIL_FROM }}","toEmail":"={{ $json.patientEmail }}","subject":"Actualización de tu cita","emailFormat":"text","text":"=El estado de tu cita cambió a {{ $json.status }}. {{ $json.reason || '' }}"},"id":"gmail","name":"Send status email","type":"n8n-nodes-base.gmail","typeVersion":2,"position":[740,260],"credentials":{"gmailOAuth2":{"id":"REPLACE_IN_N8N","name":"Gmail account"}}}
   ],

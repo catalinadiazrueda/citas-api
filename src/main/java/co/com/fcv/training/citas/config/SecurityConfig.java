@@ -30,8 +30,15 @@ class SecurityConfig {
         return registration;
     }
 
+    @Bean FilterRegistrationBean<AutomationKeyFilter> automationKeyFilterRegistration(AutomationKeyFilter filter) {
+        FilterRegistrationBean<AutomationKeyFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
     @Bean SecurityFilterChain security(HttpSecurity http, JwtTokens tokens, AuthRequestGuard guard,
-                                       ProblemWriter problems, CorsConfigurationSource corsConfigurationSource) throws Exception {
+                                       AutomationKeyFilter automationKeyFilter, ProblemWriter problems,
+                                       CorsConfigurationSource corsConfigurationSource) throws Exception {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             List<String> roles = jwt.getClaimAsStringList("roles");
@@ -47,6 +54,7 @@ class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(guard, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(automationKeyFilter, org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter.class)
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt.decoder(tokens.accessDecoder()).jwtAuthenticationConverter(converter))
                         .authenticationEntryPoint((req, res, ex) -> problems.write(res, 401, "No autenticado"))

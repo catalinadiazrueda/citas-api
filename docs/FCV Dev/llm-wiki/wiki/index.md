@@ -1,6 +1,6 @@
 # Índice de la LLM Wiki
 
-Última actualización: 2026-09-30. HU-001/002/003/004 y el corte de identidad tienen documentación cerrada; el contrato de ciclo de vida añade perfil, afiliación, cancelación, reprogramación, operación y automatización de lectura. La evidencia final de ejecución n8n depende de la instancia y credenciales del trainer.
+Última actualización: 2026-09-30. HU-001/002/003/004 y el corte de identidad tienen documentación cerrada; el contrato de ciclo de vida añade perfil, afiliación, cancelación, reprogramación, operación y automatización con clave de servicio y secreto webhook. La evidencia final de ejecución n8n depende de la instancia y credenciales del trainer.
 
 ## Lectura recomendada
 
